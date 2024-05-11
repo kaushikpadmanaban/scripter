@@ -3,12 +3,44 @@ var express = require ('express')
 var ejs = require('ejs')
 var bodyParser= require ('body-parser')
 var session = require ('express-session')
-// const mysql = require('mysql2');
+const mysql = require('mysql2');
+const { ExpressValidator } = require('express-validator');
+
+
+
+
 
 // Create the express application object
 const app = express()
 const port = 8000
 app.use(bodyParser.urlencoded({ extended: true }))
+
+// Define the database connection
+const db = mysql.createConnection ({ // FOCUS ON THIS!
+    host: 'localhost',
+    user: 'root',
+    password: 'Kp296496',
+    database: 'safescriptions',
+    port: '3306'
+});
+// Connect to the database
+db.connect((err) => {
+    if (err) {
+        throw err;
+    }
+    console.log('Connected to database');
+});
+global.db = db;
+
+app.use(session({
+    secret: 'somerandomstuff',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        expires: 600000
+    }
+}));
+
 
 // Set up css
 app.use(express.static(__dirname + '/public'));

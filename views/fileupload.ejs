@@ -1,0 +1,15 @@
+<!doctype html>
+<html>
+  <head>
+    <title>About <%=shopName%></title>
+    <link rel="stylesheet"  type="text/css" href="/main.css" />
+  </head>
+  <body>
+    <h1>File Upload to <%=shopName%></h1>
+    <p>File Upload</p>
+    <form action="/upload" method="POST" enctype="multipart/form-data">
+      <input type="file" name="file" required>
+      <button type="submit">Upload</button>
+    </form>
+  </body>
+</html>
