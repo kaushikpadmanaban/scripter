@@ -38,6 +38,7 @@ module.exports = function(app, shopData) {
     const bcrypt = require('bcrypt');
     const request = require('request');
     const PythonShell = require('python-shell').PythonShell;
+    const fs = require('fs')
 
     
     
@@ -69,7 +70,7 @@ module.exports = function(app, shopData) {
 
     app.post('/loggedin', function (req,res) {
         let username = req.body.username;
-        let hashedPassword = "SELECT Personid, password FROM authentication WHERE username = (?)";
+        let hashedPassword = "SELECT Personid, password, privateKey FROM authentication WHERE username = (?)";
         
         db.query(hashedPassword, username, (err, result1) => {
             if (err) {
@@ -84,8 +85,11 @@ module.exports = function(app, shopData) {
                     else if (result2 == true) {  
                         req.session.user = req.body.username;
                         req.session.userId = result1[0].Personid;
+                        req.session.privKey = result1[0].privateKey;
+                        req.session.hashpass = result1[0].password;
                         res.redirect('./');
                         console.log("Logged In")
+                        console.log(result1[0])
                         
                     }
                     else {
@@ -169,11 +173,127 @@ module.exports = function(app, shopData) {
             if (err) {
                 res.redirect('./'); 
             }
-            let newData = Object.assign({}, shopData, {availableBooks:result});
+            //let newData = Object.assign({}, shopData, {availableBooks:result});
             //console.log(newData)
-            res.render("myfiles.ejs", newData)
+            //res.render("myfiles.ejs", newData)
+            let recipient = 0;
+            let sqlquery2 = "SELECT * from authentication where usertype = (?)";
+            db.query(sqlquery2,recipient, (err, result2) => {
+            if (err) {
+                res.redirect('./'); 
+            }
+            let newData1 = Object.assign({}, shopData, {availableBooks: result, availableRecipients:result2});
+            //console.log(result2[0].Personid)
+            res.render("myfiles.ejs", newData1)
+         });
+         });
+         
+    });
+
+    
+
+    app.post('/sign', (req, res) => {
+
+    const selectedFilenameFromForm = req.body['selected-item'];
+    const selectedRecipient = req.body['recipients'];
+
+    // Split the selected value to extract username and Personid
+    const [selectedRecipientUsername, selectedRecipientID] = selectedRecipient.split(':');
+
+    // console.log("Filename from form data:", selectedFilenameFromForm);
+    // console.log("Selected recipient username:", selectedRecipientUsername);
+    // console.log("Recipient userID:", selectedRecipientID);
+
+    let sqlquery = "SELECT filepath FROM fileData WHERE filename = (?)";
+    // execute sql query
+    let currentFile = selectedFilenameFromForm;
+    let currentRecipient = selectedRecipientUsername;
+    let currentRecipientID = selectedRecipientID;
+        db.query(sqlquery,currentFile, async (err, result) => {
+            if (err) {
+                res.redirect('./'); 
+            }
+            console.log(result[0].filepath)
+            let options = {
+                mode: 'text',
+                pythonOptions: ['-u'], // get print results in real-time
+                args: [req.session.privKey, req.session.hashpass, currentFile, result[0].filepath]
+            };
+    
+            await PythonShell.run('checkRSA.py', options).then(messages=>{
+                console.log(messages);
+                let sqlquery2 = "INSERT into fileTransaction (fileName, senderName, senderID, fileSignature, recipientName, recipientID, fileLocation) VALUES (?,?,?,?,?,?,?)"
+                let input = [currentFile, req.session.user, req.session.userId, messages, currentRecipient, currentRecipientID, result[0].filepath]
+                db.query(sqlquery2, input, (err, result2) => {
+                    if (err) {
+                        console.log("ERROR!")
+                    }
+                    console.log("SUCCESS!")
+                    //result2.redirect('./')
+                })
+            })
+
+         });
+        
+        
+
+    });
+
+    app.get('/receivedfiles', redirectLogin, function(req, res) {
+        let sqlquery = "SELECT * FROM fileTransaction where recipientID = ? AND recipientName = ?"; // query database to get all the books
+        // execute sql query
+        db.query(sqlquery, [req.session.userId, req.session.user], (err, result) => {
+            if (err) {
+                res.redirect('./'); 
+            }
+            console.log(result);
+            let newData = Object.assign({}, shopData, {availableFiles:result});
+            //console.log(result2[0].Personid)
+            res.render("receivedfiles.ejs", newData)
          });
     });
+
+    app.post('/verify', function(req, res) {
+        console.log(req.body);
+        let sender = req.body['selected-sender'];
+        let senderID = req.body['selected-senderID'];
+        let fileName = req.body['selected-file'];
+        let signature = req.body['selected-signature'];
+        let fileLocation = req.body['selected-fileLocation'];
+
+        let sqlquery = "SELECT publicKey from authentication where username = ? AND Personid = ? "
+        db.query(sqlquery, [sender, senderID], async (err,pubKey) => {
+            if (err) {
+                res.redirect('./'); 
+            }
+            // console.log(pubKey[0].publicKey)
+            let options = {
+                mode: 'text',
+                pythonOptions: ['-u'], // get print results in real-time
+                args: [fileName, signature, fileLocation, pubKey[0].publicKey]
+            };
+    
+            await PythonShell.run('verify.py', options).then(messages=>{
+                const result = messages[0]
+                if(result === "authentic") {
+                    if (fs.existsSync(fileLocation)) {
+                        
+                        res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
+                        res.setHeader('Content-Type', 'application/octet-stream');
+                
+                        fs.createReadStream(fileLocation).pipe(res);
+                    } else {
+                        res.status(404).send('File not found');
+                    }
+                }
+            })
+            
+        })
+
+
+
+    });
+
     // Set up a route for file uploads
     app.post('/upload', upload.single('file'), (req, res) => {
     // Handle the uploaded file

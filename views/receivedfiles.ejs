@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Welcome to <%=shopName%></title>
+    <link rel="stylesheet"  type="text/css" href="/main.css" />
+  </head>
+  <body>
+    </script>
+    <h1><%=shopName%> Shop</h1>
+    <h2>Your Files:</h2>
+    <form id="form" method="POST" action="/verify">
+        <ul>
+            <% availableFiles.forEach((file, index) => { %>
+              <li>
+                <p>File Name: <%= file.fileName %> Sent On: <%= file.fileDate %>
+                Sender: <%= file.senderName %></p>
+              </li>
+            <input type="text" id="input-fileName" name="selected-file"  value=" <%= file.fileName %>" hidden>
+            <input type="text" id="input-senderName" name="selected-sender"  value="<%= file.senderName %>" hidden>
+            <input type="text" id="input-signature" name="selected-signature" value="<%= file.fileSignature %>" hidden>
+            <input type="text" id="input-senderID" name="selected-senderID" value="<%= file.senderID %>" hidden>
+            <input type="text" id="input-fileLocation" name="selected-fileLocation" value="<%= file.fileLocation %>" hidden>
+            <button type="submit">Submit</button>
+            <% }) %>
+          </ul>
+    </form>
+    
+    </body>
+</html>
+

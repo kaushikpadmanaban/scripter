@@ -5,12 +5,42 @@
     <link rel="stylesheet"  type="text/css" href="/main.css" />
   </head>
   <body>
+    <script>
+    function selectAndSubmit(index) {
+      const selectedValue = document.getElementById(`item-input-${index}`).value;
+      document.getElementById('input-field').value = selectedValue;
+      //document.getElementById('form').submit();
+    }
+    function selectRecipient(index) {
+    const selectedRecipient = document.getElementById('recipients'); // Get the select element
+    const selectedOption = selectedRecipient.options[index]; // Get the selected option by index
+    const selectedRecipientValue = selectedOption.value; // Get the value of the selected option
+
+    document.getElementById('recipient-field').value = selectedRecipientValue;
+    }
+    </script>
     <h1><%=shopName%> Shop</h1>
     <h2>Your Files:</h2>
     <ul>
-      <% availableBooks.forEach(function(book) { %>
-        <li><%= book.filename %></li>
+      <% availableBooks.forEach((book, index) => { %>
+        <li>
+          <%= book.filename %>
+          <input type="text" id="item-input-<%= index %>" value="<%= book.filename %>" readonly>
+         <button onclick="selectAndSubmit('<%= index %>')">Select</button>
+        </li>
       <% }) %>
     </ul>
+   
+    <form id="form" method="POST" action="/sign">
+      <input type="text" id="input-field" name="selected-item" readonly>
+      <select name="recipients" id="recipients">
+          <% availableRecipients.forEach((recipient, index) => { %>
+              <option value="<%= recipient.username + ':' + recipient.Personid %>" id="recipient-<%= index %>"> <%= recipient.username %> </option>
+          <% }) %>
+      </select>
+      <button type="submit">Submit</button>
+  </form>
+  
     </body>
 </html>
+

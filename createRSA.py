@@ -13,6 +13,15 @@ privateKey = myKey.export_key(
     prot_params={'iteration_count':131072})
 publicKey = myKey.public_key().export_key()
 privKeyEnc = base64.b64encode(privateKey)
+privKeyString = privKeyEnc.decode('utf-8')
 pubKeyEnc = base64.b64encode(publicKey)
-print(privKeyEnc)
-print(pubKeyEnc)
+pubKeyString = pubKeyEnc.decode('utf-8')
+
+# with open('private_key.txt', 'w') as f:
+#     f.write(privKeyString)
+
+# with open('public_key.txt', 'w') as f:
+#     f.write(pubKeyString)
+
+print(privKeyString)
+print(pubKeyString)
