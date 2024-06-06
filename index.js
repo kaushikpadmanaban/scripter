@@ -11,11 +11,11 @@ const port = 8000
 app.use(bodyParser.urlencoded({ extended: true }))
 
 const db = mysql.createConnection ({
-    host: 'localhost',
-    user: 'root',
-    password: 'Kp296496',
-    database: 'safescriptions',
-    port: '3306'
+    host: //REDACTED,
+    user: //REDACTED,
+    password: //REDACTED,
+    database: //REDACTED,
+    port: //REDACTED
 });
 // Connect to the database
 db.connect((err) => {
