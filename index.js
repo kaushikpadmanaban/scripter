@@ -1,22 +1,16 @@
-// Import the modules we need
+// Import required modules
 var express = require ('express')
 var ejs = require('ejs')
 var bodyParser= require ('body-parser')
 var session = require ('express-session')
 const mysql = require('mysql2');
-const { ExpressValidator } = require('express-validator');
+require('dotenv').config();
 
-
-
-
-
-// Create the express application object
 const app = express()
 const port = 8000
 app.use(bodyParser.urlencoded({ extended: true }))
 
-// Define the database connection
-const db = mysql.createConnection ({ // FOCUS ON THIS!
+const db = mysql.createConnection ({
     host: 'localhost',
     user: 'root',
     password: 'Kp296496',
@@ -33,7 +27,7 @@ db.connect((err) => {
 global.db = db;
 
 app.use(session({
-    secret: 'somerandomstuff',
+    secret: process.env.SESSION_SECRET, //session secret is set using environmental variables thus making it more secure
     resave: false,
     saveUninitialized: false,
     cookie: {
@@ -41,26 +35,14 @@ app.use(session({
     }
 }));
 
-
 // Set up css
 app.use(express.static(__dirname + '/public'));
 
-// Set the directory where Express will pick up HTML files
-// __dirname will get the current directory
 app.set('views', __dirname + '/views');
-
-// Tell Express that we want to use EJS as the templating engine
 app.set('view engine', 'ejs');
-
-// Tells Express how we should process html files
-// We want to use EJS's rendering engine
 app.engine('html', ejs.renderFile);
 
-// Define our data
-var shopData = {shopName: "Safescriptions"}
+var shopData = {shopName: "Scripter"}
 
-// Requires the main.js file inside the routes folder passing in the Express app and data as arguments.  All the routes will go in this file
 require("./routes/main")(app, shopData);
-
-// Start the web app listening
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))

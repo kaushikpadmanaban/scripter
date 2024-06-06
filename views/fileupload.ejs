@@ -2,14 +2,42 @@
 <html>
   <head>
     <title>About <%=shopName%></title>
-    <link rel="stylesheet"  type="text/css" href="/main.css" />
+    <link rel="stylesheet"  type="text/css" href="/css/fileupload.css" />
+    <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css" >
   </head>
   <body>
-    <h1>File Upload to <%=shopName%></h1>
-    <p>File Upload</p>
-    <form action="/upload" method="POST" enctype="multipart/form-data">
-      <input type="file" name="file" required>
-      <button type="submit">Upload</button>
-    </form>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">Scripter</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" href="/dashboarddoc">Dashboard</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/logout">Logout</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <div class="headerh1">
+      <h4>upload files to</h4>
+      <br>
+      <h1 uppercase><%=shopName%></h1>
+      <br>
+    </div>
+    <div class="fileuploadmodule">
+      <form action="/upload" method="POST" enctype="multipart/form-data">
+        <input class="btn btn-secondary" type="file" name="file" required>
+        <button class="btn btn-primary" type="submit">Upload</button>
+      </form>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>

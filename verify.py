@@ -4,10 +4,9 @@ from Crypto.Hash import SHA256
 from Crypto.PublicKey import RSA
 import base64
 
-fileName = sys.argv[1]
-fileSign = sys.argv[2]
-fileLoc = sys.argv[3]
-encodedPubKey = sys.argv[4]
+fileSign = sys.argv[1]
+fileLoc = sys.argv[2]
+encodedPubKey = sys.argv[3]
 
 # Decode public key back to binary data
 
@@ -34,15 +33,6 @@ try:
 except (ValueError):
 
     print("inauthentic")
-
-# signEncoded = base64.b64encode(signature)
-# signEncodedString = signEncoded.decode("utf-8")
-
-# file_name = 'signature.txt'
-# file_out = open(file_name, 'w')
-# file_out.write(signEncodedString)
-# file_out.close()
-#print(signEncodedString)
 
 
 

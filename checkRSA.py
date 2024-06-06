@@ -1,43 +1,35 @@
+# Import relevant libraries and modules
 import sys
 from Crypto.Signature import pss
 from Crypto.Hash import SHA256
 from Crypto.PublicKey import RSA
 import base64
 
+# Arguments taken from JS
 encodedKey = sys.argv[1]
 pwd = sys.argv[2]
-fileName = sys.argv[3]
-fileLoc = sys.argv[4]
+fileLoc = sys.argv[3]
 
-# print("Encoded Key: " + encodedKey)
-# print("PWD: " + pwd)
-# print("Filename: " + fileName)
-# print("FileLoc: " + fileLoc)
-
-# # file_location = 'prescription.pdf'
+# Read the file from file location as bytes
 file_in = open(fileLoc, 'rb')
 message = file_in.read()
 file_in.close()
-# # pwd = b'secret'
+
+# Reversal of the process used when creating RSA key 
+# Returns the key in its original format
 
 decodedKey = base64.b64decode(encodedKey)
 
+# Sets up key for signing
 key = RSA.import_key(decodedKey, passphrase=pwd)
 
+# File is hashed using SHA-256
 h = SHA256.new(message)
 
 signature = pss.new(key).sign(h)
 
-
-
 signEncoded = base64.b64encode(signature)
 signEncodedString = signEncoded.decode("utf-8")
 
-file_name = 'signature.txt'
-file_out = open(file_name, 'w')
-file_out.write(signEncodedString)
-file_out.close()
+# Script returns the signature as a string
 print(signEncodedString)
-
-
-
