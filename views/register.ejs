@@ -2,17 +2,45 @@
 <html>
   <head>
     <title>Register for <%=shopName%></title>
-    <link rel="stylesheet"  type="text/css" href="/main.css" />
+    <link rel="stylesheet"  type="text/css" href="/css/register.css" />
+    <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css" >
+  </script>
   </head>
   <body>
-    <h1>Register for <%=shopName%></h1>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">Scripter</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" href="./">Home</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <div class="h1-header"><h1>Register for <%=shopName%></h1></div>
+    
+    <div class="register-form">
     <form method="POST" action="/registered">
-        <p>First name: <input id="first" type="text" name="first" value="first name" /></p>
-        <p>Last name: <input id="last" type="text" name="last" value="last name" /></p>
-        <p>Email: <input id="email" type="text" name="email" value="email" /></p>
-        <p>Username: <input id="username" type="username" name="username" value="username" /></p>
-        <p>Password: <input id="password" type="password" name="password" value="password" /></p>
+        <p>First name: <input id="first" type="text" name="first" value="" required /></p>
+        <p>Last name: <input id="last" type="text" name="last" value="" required/></p>
+        <p>Username: <input id="username" type="username" name="username" value="" required/></p>
+        <p>Password: <input id="password" type="password" name="password" value="" required/></p>
+        <p>Confirm Password: <input id="confpass" type="password" name="confpassword" value="" required/></p>
+        <p>User Type:
+        <input type="radio" id="pharmacist" name="usertype" value="0" required>
+        <label for="pharmacist"> Pharmacist </label>
+        <input type="radio" id="doctor" name="usertype" value="1" >
+        <label for="doctor"> Doctor </label> </p>
         <input type="submit" value="Register" />
       </form>
+    </div>
+      <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>

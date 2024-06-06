@@ -1,0 +1,81 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Welcome to <%=shopName%></title>
+    <link rel="stylesheet"  type="text/css" href="/css/myfiles.css" />
+    <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css" >
+  </head>
+  <body>
+    <script>
+    function select(index) {
+      const selectedValue = document.getElementById(`item-input-${index}`).value;
+      document.getElementById('input-field').value = selectedValue;
+    }
+
+    function validateForm() {
+            var inputField = document.getElementById('input-field').value;
+            if (inputField === "") {
+                alert("Please select a file before submitting.");
+                return false;
+            }
+            return true;
+        }
+    </script>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">Scripter</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" href="/dashboarddoc">Dashboard</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/logout">Logout</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+   
+    <div class="header-h1"><h1>Your Files:</h1></div>
+    <div class="mainbody">
+    <ul>
+      <% availableFile.forEach((file, index) => { %>
+        <table>
+          <tr>
+            <th>File Name</th>
+            <th>Select</th>
+          </tr>
+          <tr>
+            <td id="filename"><%= file.filename %>
+              <input type="text" id="item-input-<%= index %>" value="<%= file.filename %>" readonly hidden></td>
+            <td><button class="btn btn-secondary" onclick="select('<%= index %>')">Select</button></td>
+          </tr>
+        </table>
+      <% }) %>
+    </ul>
+  </div>
+    <div class="mainsubmit">
+      <form id="form" method="POST" action="/sign" onsubmit="return validateForm()">
+        <input class="btn btn-secondary" type="text" id="input-field" name="selected-item" readonly required>
+        <select class="btn btn-secondary" name="recipients" id="recipients" required>
+            <% availableRecipients.forEach((recipient, index) => { %>
+                <option value="<%= recipient.username + ':' + recipient.Personid %>" id="recipient-<%= index %>"> <%= recipient.username %> </option>
+            <% }) %>
+        </select>
+        
+          <button class="btn btn-primary" type="submit">Submit</button>
+        </div>
+        
+      </form>
+    
+    
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="/js/bootstrap.bundle.min.js"></script>
+    </body>
+</html>
+

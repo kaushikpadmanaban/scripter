@@ -1,0 +1,20 @@
+.mainbody {
+    padding:0% 33% 3% 33%;
+    height: 70%;
+    text-align: center;
+    align-content: center;
+}
+
+.header-h1 {
+    text-align: center;
+    padding:5% 0% 5% 0%;
+}
+
+.mainsubmit {
+    text-align: center;
+
+}
+
+#filename {
+    min-width: 90%;
+}
